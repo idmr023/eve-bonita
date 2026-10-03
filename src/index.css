@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { scroll-behavior: smooth; }
+body {
+  @apply bg-crema text-tinta font-ui overflow-x-hidden;
+  background-image:
+    radial-gradient(circle at 10% 10%, rgba(255,143,163,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 90% 90%, rgba(245,214,123,0.12) 0%, transparent 50%);
+}
+
+::selection { @apply bg-rosa text-white; }
+
+/* scrollbar cute */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { @apply bg-crema; }
+::-webkit-scrollbar-thumb { @apply bg-rosa rounded-full; }
+
+/* marquee */
+.marquee-track { display:flex; width:max-content; animation: marquee 28s linear infinite; }
+.marquee-track:hover { animation-play-state: paused; }
