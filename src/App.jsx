@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import Watermarks from './components/Watermarks'
 import Navbar from './components/Navbar'
 import HeroCountdown from './components/HeroCountdown'
@@ -8,9 +9,29 @@ import FotoCreativa from './components/FotoCreativa'
 import Galeria from './components/Galeria'
 import Razones from './components/Razones'
 import MusicVinyl from './components/MusicVinyl'
+import TheaterCurtainScene from './components/TheaterCurtainScene'
 import { NOMBRES } from './data/contenido'
 
 export default function App() {
+  // El navegador hace el scroll al ancla antes de que React monte -> lo forzamos
+  useEffect(() => {
+    const irAlHash = () => {
+      const id = window.location.hash.replace(/^#/, '')
+      // sin ancla (p.ej. al volver desde /cartas) -> arriba del todo
+      if (!id || id === '/' || id === 'admin' || id === 'cartas') {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        return
+      }
+      requestAnimationFrame(() => {
+        const el = document.getElementById(id)
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
+    }
+    irAlHash()
+    window.addEventListener('hashchange', irAlHash)
+    return () => window.removeEventListener('hashchange', irAlHash)
+  }, [])
+
   return (
     <div className="relative min-h-screen">
       <Watermarks />
@@ -21,8 +42,9 @@ export default function App() {
         <a href="#cuenta" className="px-3 py-1 rounded-full text-xs">Inicio</a>
         <a href="#planes" className="px-3 py-1 rounded-full text-xs">Planes</a>
         <a href="#avatars" className="px-3 py-1 rounded-full text-xs">3D</a>
-        <a href="#carta" className="px-3 py-1 bg-rosa rounded-full text-xs">Carta</a>
+        <a href="#cartas" className="px-3 py-1 bg-rosa rounded-full text-xs">Cartitas</a>
         <a href="#galeria" className="px-3 py-1 rounded-full text-xs">Fotos</a>
+        <a href="#theater" className="px-3 py-1 rounded-full text-xs">Historia</a>
       </div>
 
       <main className="relative z-10">
@@ -36,6 +58,7 @@ export default function App() {
         <MusicVinyl />
         <Galeria />
         <Razones />
+        <TheaterCurtainScene />
 
         <footer className="py-10 px-4 text-center bg-noche text-white/70">
           <div className="font-display font-bold text-white text-lg">Hecho con mucho amor por {NOMBRES.el} para {NOMBRES.apodo} 💛</div>

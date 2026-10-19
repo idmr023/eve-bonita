@@ -4,7 +4,8 @@ const links = [
   { href: '#cuenta', label: 'Cuenta regresiva' },
   { href: '#planes', label: 'Planes' },
   { href: '#avatars', label: 'Nosotros 3D' },
-  { href: '#carta', label: 'Cartita' },
+  { href: '#cartas', label: 'Cartitas' },
+  { href: '#theater', label: 'Nuestra historia' },
   { href: '#galeria', label: 'Galería' },
   { href: '#contigo', label: 'Cuenta conmigo' },
 ]

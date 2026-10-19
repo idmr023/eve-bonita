@@ -88,6 +88,22 @@ Gracias por dejarme quererte.
 Tuyo,
 Iván 💛`
 
+// Cartas iniciales: la primera es la que ya existía en la carta principal.
+// Se usan como semilla y como respaldo si Firebase está vacío.
+export const CARTAS_INICIALES = [
+  {
+    id: 'carta-inicial',
+    titulo: 'Mi Cheva hermosa',
+    sub: 'la primera de todas',
+    emoji: '💌',
+    fecha: '',
+    texto: CARTA_TEXTO,
+    firma: 'siempre tuyo, Iván',
+    destacado: true,
+    orden: 1,
+  },
+]
+
 export const RAZONES = [
   { titulo: 'Porque brillas', texto: 'Tu hermosa personalidad hace que me enamore cada día un poquito más.' },
   { titulo: 'Porque eres valiente', texto: 'En la cancha no te achicas. Esa garra tuya me enamora.' },

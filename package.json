@@ -4,10 +4,12 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "all": "npm install && npm run dev",
+    "dev": "vite --port 8080",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "npm run build && gh-pages -d dist"
+    "deploy": "npm run build && gh-pages -d dist",
+    "cartas": "node scripts/subir-cartas.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^9.122.0",

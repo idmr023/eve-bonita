@@ -17,6 +17,98 @@ body {
 ::-webkit-scrollbar-track { @apply bg-crema; }
 ::-webkit-scrollbar-thumb { @apply bg-rosa rounded-full; }
 
+/* ocultar scrollbar (barra de capítulos del teatro) */
+.scrollbar-none { scrollbar-width: none; -ms-overflow-style: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
+
 /* marquee */
 .marquee-track { display:flex; width:max-content; animation: marquee 28s linear infinite; }
 .marquee-track:hover { animation-play-state: paused; }
+
+/* ---------------------------------------------------------------------------
+   Telón de teatro: overlay fijo sobre el canvas 3D (nunca se mueve)
+   --------------------------------------------------------------------------- */
+.telon-folds {
+  background-image: repeating-linear-gradient(
+    90deg,
+    #6E1428 0px,   #6E1428 5px,
+    #A3203C 5px,   #A3203C 19px,
+    #7C1830 19px,  #7C1830 32px
+  );
+}
+
+.telon-lateral {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(44px, 9vw, 96px);
+}
+
+.telon-izq {
+  left: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 52%, 82% 66%, 68% 84%, 44% 100%, 0 100%);
+  filter: drop-shadow(8px 0 12px rgba(0, 0, 0, 0.5));
+}
+
+.telon-der {
+  right: 0;
+  clip-path: polygon(100% 0, 0 0, 0 52%, 18% 66%, 32% 84%, 56% 100%, 100% 100%);
+  filter: drop-shadow(-8px 0 12px rgba(0, 0, 0, 0.5));
+}
+
+/* cinturón que amarra el telón */
+.telon-cinta {
+  position: absolute;
+  width: 30px;
+  height: 13px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #F5D67B 0%, #C89B2C 55%, #8A6A18 100%);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.55);
+}
+
+.telon-cinta-izq { left: clamp(22px, 4.5vw, 50px); top: 64%; transform: rotate(-14deg); }
+.telon-cinta-der { right: clamp(22px, 4.5vw, 50px); top: 64%; transform: rotate(14deg); }
+
+/* dintel / friso superior */
+.telon-dintel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: clamp(56px, 10vw, 110px);
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.5));
+}
+
+/* riel dorado superior */
+.telon-riel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: linear-gradient(180deg, #F5D67B 0%, #C89B2C 50%, #7E5F14 100%);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* pliegues del dintel */
+.telon-dintel-pliegues {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  height: clamp(28px, 5vw, 52px);
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.28) 0px, rgba(0, 0, 0, 0.28) 3px,
+    rgba(255, 255, 255, 0.09) 3px, rgba(255, 255, 255, 0.09) 16px,
+    rgba(0, 0, 0, 0.16) 16px, rgba(0, 0, 0, 0.16) 30px
+  );
+}
+
+/*hornacina oscura donde cae la tela */
+.telon-fondo {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 42%, rgba(0, 0, 0, 0) 38%, rgba(0, 0, 0, 0.55) 100%);
+  pointer-events: none;
+}

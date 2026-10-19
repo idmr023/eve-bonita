@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import CartaPanel from './CartaPanel.jsx'
+import CartasPanel from './CartasPanel.jsx'
 import CancionesPanel from './CancionesPanel.jsx'
 import FotosPanel from './FotosPanel.jsx'
 import PlanesPanel from './PlanesPanel.jsx'
 
 const TABS = [
+  { id: 'cartas', label: 'Cartitas', emoji: '📜' },
   { id: 'carta', label: 'Carta', emoji: '💌' },
   { id: 'canciones', label: 'Canciones', emoji: '🎵' },
   { id: 'fotos', label: 'Fotos', emoji: '📸' },
@@ -38,6 +40,9 @@ export default function Admin() {
               </button>
             ))}
           </nav>
+          <a href="#cartas" className="text-xs bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full">
+            📜 ver cartitas
+          </a>
           <a href="#/" className="text-xs bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full">
             ← ver sitio
           </a>
@@ -45,6 +50,7 @@ export default function Admin() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 py-6">
+        {tab === 'cartas' && <CartasPanel />}
         {tab === 'carta' && <CartaPanel />}
         {tab === 'canciones' && <CancionesPanel />}
         {tab === 'fotos' && <FotosPanel />}
