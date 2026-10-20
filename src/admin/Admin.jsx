@@ -40,6 +40,9 @@ export default function Admin() {
               </button>
             ))}
           </nav>
+          <a href="#cartas" className="text-xs bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full">
+            📜 ver cartitas
+          </a>
           <a href="#/" className="text-xs bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full">
             ← ver sitio
           </a>
