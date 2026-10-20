@@ -18,22 +18,22 @@ export const FRASES_FONDO = [
   'me haces muy feliz',
 ]
 
-// Fecha objetivo: próximo domingo 16:30. Se auto-calcula.
-// Si quieres fijar: cambia a '2026-09-28T16:30:00-05:00' (ajusta zona)
+// Fecha objetivo: próximo sábado 15:00. Se auto-calcula.
+// Si quieres fijar: cambia a '2026-10-03T15:00:00-05:00' (ajusta zona)
 export function getProximoDomingo1630() {
   const now = new Date()
   const d = new Date(now)
-  const day = d.getDay() // 0 dom
-  let diff = (7 - day) % 7
+  const day = d.getDay() // 6 sáb
+  let diff = (6 - day + 7) % 7
   if (diff === 0) {
-    // es domingo: si ya pasó las 16:30, apuntar al próximo
-    const hoy1630 = new Date(d)
-    hoy1630.setHours(16, 30, 0, 0)
-    if (now >= hoy1630) diff = 7
-    else return hoy1630
+    // es sábado: si ya pasó las 15:00, apuntar al próximo
+    const hoy1500 = new Date(d)
+    hoy1500.setHours(15, 0, 0, 0)
+    if (now >= hoy1500) diff = 7
+    else return hoy1500
   }
   d.setDate(d.getDate() + diff)
-  d.setHours(16, 30, 0, 0)
+  d.setHours(15, 0, 0, 0)
   d.setMilliseconds(0)
   return d
 }
@@ -87,6 +87,64 @@ Gracias por dejarme quererte.
 
 Tuyo,
 Iván 💛`
+
+// Todas las cartitas guardadas. La 1 ya la teníamos; la 2 y 3 son nuevas.
+export const CARTAS_INICIALES = [
+  {
+    id: 'carta-1',
+    titulo: 'La cartita del sobre',
+    sub: 'la primera, la que ya tenías',
+    emoji: '💌',
+    color: '#FF8FA3',
+    orden: 1,
+    texto: CARTA_TEXTO,
+    firma: 'siempre tuyo, Iván',
+  },
+  {
+    id: 'carta-2',
+    titulo: 'Para cuando dudes de ti',
+    sub: 'porque te veo y no me cabe en el pecho',
+    emoji: '🌟',
+    color: '#C9A0DC',
+    orden: 2,
+    texto: `Cheva,
+
+Hay días en los que no te ves como yo te veo, y por eso te escribo esta.
+
+Para mí no existes "a veces bonita". Existes bonita siempre: con el pelo recogido y sin maquillaje, con tus pantalones sueltos que tanto amas, con la camiseta de la U o del Barça arrugada después del partido, riendo a carcajadas con una comedia o con la mano en el pecho con una romántica. Todas esas versiones son mi favorita, y ninguna es casualidad.
+
+Tus pecas no son "detalles": son constelaciones. Tus ojitos no son "lindos": son mi lugar favorito para perderme. Tu forma de ser — random, libre, sin molde, sin vergüenza — no es algo que debas corregir: es exactamente lo que me enamoró.
+
+No tienes que cambiar nada. Ni un pelo. Ni un pensamiento. Nunca cambies.
+
+Con todo mi amor,
+Iván 💛`,
+    firma: 'tu Iván, siempre',
+  },
+  {
+    id: 'carta-3',
+    titulo: 'Lo que quiero seguir haciendo contigo',
+    sub: 'esto no es una despedida, es un "nos vemos pronto"',
+    emoji: '📅',
+    color: '#F5D67B',
+    orden: 3,
+    texto: `Mi Cheva,
+
+Esto no es una despedida, es un "nos vemos pronto".
+
+Quiero seguir yendo a la iglesia contigo y escucharte cantar bajito. Quiero seguir leyendo un versículo contigo y pelearnos por cuál es el mejor. Quiero seguir gritando goles en el estadio, aunque el Barça juegue mal — porque contigo hasta perder sabe a victoria.
+
+Quiero seguir corriendo a tu lado aunque me ganes siempre, ir al parque de las aguas en un día caluroso, probar postres nuevos y fingir que no me gustan tanto. Quiero ver mil pelis contigo, aunque te duermas en la última. Quiero cantar desafinando a Taylor, a Airbag, a Oasis y a Green Day, y que me mires como si fuera un concierto.
+
+Quiero seguir tachando planes de nuestra lista y agregando nuevos. Quiero sábados de citas, días de fútbol, y todos los días que haya en medio.
+
+Siempre te voy a elegir a ti, Cheva. Otra vez y otra vez.
+
+Tuyo,
+Iván 💛`,
+    firma: 'el que te elige siempre',
+  },
+]
 
 export const RAZONES = [
   { titulo: 'Porque brillas', texto: 'Tu hermosa personalidad hace que me enamore cada día un poquito más.' },

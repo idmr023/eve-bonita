@@ -88,6 +88,13 @@ export default function Cartita() {
             <p className="font-hand text-white/50 text-center mt-3">{open ? 'vuelve a tocar para cerrar' : 'hay algo que quiero decirte...'}</p>
           </div>
         </div>
+
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <a href="#/cartitas" className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 px-6 py-3 rounded-full font-semibold transition">
+            💌 ver todas mis cartitas guardadas
+          </a>
+          <p className="font-ui text-white/50 text-sm self-center">las 3 cartitas que te escribí, en un solo lugar</p>
+        </div>
       </div>
     </section>
   )

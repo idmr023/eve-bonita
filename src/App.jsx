@@ -21,7 +21,8 @@ export default function App() {
         <a href="#cuenta" className="px-3 py-1 rounded-full text-xs">Inicio</a>
         <a href="#planes" className="px-3 py-1 rounded-full text-xs">Planes</a>
         <a href="#avatars" className="px-3 py-1 rounded-full text-xs">3D</a>
-        <a href="#carta" className="px-3 py-1 bg-rosa rounded-full text-xs">Carta</a>
+        <a href="#carta" className="px-3 py-1 rounded-full text-xs">Carta</a>
+        <a href="#/cartitas" className="px-3 py-1 bg-rosa rounded-full text-xs">Cartitas</a>
         <a href="#galeria" className="px-3 py-1 rounded-full text-xs">Fotos</a>
       </div>
 

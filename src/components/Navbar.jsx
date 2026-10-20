@@ -5,6 +5,7 @@ const links = [
   { href: '#planes', label: 'Planes' },
   { href: '#avatars', label: 'Nosotros 3D' },
   { href: '#carta', label: 'Cartita' },
+  { href: '#/cartitas', label: 'Cartitas' },
   { href: '#galeria', label: 'Galería' },
   { href: '#contigo', label: 'Cuenta conmigo' },
 ]

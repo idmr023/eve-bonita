@@ -40,7 +40,7 @@ export default function HeroCountdown() {
         {t.done ? (
           <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="mt-8 bg-gradient-to-br from-rosa to-dorado text-white rounded-[28px] p-8 shadow-xl">
             <div className="text-4xl">¡Es hoy! 💛</div>
-            <p className="font-hand text-2xl mt-2">Cheva, ya es domingo 4:30 — te veo pronto</p>
+            <p className="font-hand text-2xl mt-2">Cheva, ya es sábado 3pm — te veo pronto</p>
             <button onClick={lanzar} className="mt-4 bg-white text-rosa px-6 py-2 rounded-full font-bold">celebrar ✨</button>
           </motion.div>
         ) : (

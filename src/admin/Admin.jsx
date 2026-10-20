@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import CartaPanel from './CartaPanel.jsx'
+import CartasPanel from './CartasPanel.jsx'
 import CancionesPanel from './CancionesPanel.jsx'
 import FotosPanel from './FotosPanel.jsx'
 import PlanesPanel from './PlanesPanel.jsx'
 
 const TABS = [
-  { id: 'carta', label: 'Carta', emoji: '💌' },
+  { id: 'cartas', label: 'Cartitas', emoji: '💌' },
+  { id: 'carta', label: 'Carta vieja', emoji: '✉️' },
   { id: 'canciones', label: 'Canciones', emoji: '🎵' },
   { id: 'fotos', label: 'Fotos', emoji: '📸' },
   { id: 'planes', label: 'Planes', emoji: '🗓️' },
@@ -45,6 +47,7 @@ export default function Admin() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 py-6">
+        {tab === 'cartas' && <CartasPanel />}
         {tab === 'carta' && <CartaPanel />}
         {tab === 'canciones' && <CancionesPanel />}
         {tab === 'fotos' && <FotosPanel />}
