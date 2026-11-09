@@ -6,6 +6,7 @@ const links = [
   { href: '#avatars', label: 'Nosotros 3D' },
   { href: '#carta', label: 'Cartita' },
   { href: '#/cartitas', label: 'Cartitas' },
+  { href: '#/chat', label: 'Chat' },
   { href: '#galeria', label: 'Galería' },
   { href: '#contigo', label: 'Cuenta conmigo' },
 ]
