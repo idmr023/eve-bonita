@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PLANES_INICIALES } from '../data/contenido'
 import { escuchar, guardarDoc, actualizar, borrar } from '../lib/db'
+import HourlyCalendar from './HourlyCalendar'
 
 const PRIOR = { alta: 'bg-rosa text-white', media: 'bg-dorado text-tinta', baja: 'bg-white border text-tinta' }
 const CAT_EMOJI = { estadio: '🏟️', futbol: '⚽', postres: '🧁', pelis: '🎬', iglesia: '⛪', selva: '🍃', barca: '🔵🔴', musica: '🎸', perritos: '🐶', paseo: '🎡', correr: '🏃', citas: '💑' }
@@ -13,7 +14,6 @@ function Calendar({ planes, selected, onSelect }) {
   const days = new Date(y, m + 1, 0).getDate()
   const monthName = cur.toLocaleDateString('es-PE', { month: 'long', year: 'numeric' })
 
-  // mapa fecha -> planes
   const byDate = useMemo(() => {
     const map = {}
     planes.forEach(p => { if (p.fecha) (map[p.fecha] ??= []).push(p) })
@@ -50,7 +50,7 @@ function Calendar({ planes, selected, onSelect }) {
           )
         })}
       </div>
-      <p className="text-xs text-tinta/50 mt-3 font-ui">Toca un día para asignar un plan. Las fechas se guardan y aparecen con puntito rosa.</p>
+      <p className="text-xs text-tinta/50 mt-3 font-ui">Toca un día para ver las horas libres y asignar un plan.</p>
     </div>
   )
 }
@@ -62,9 +62,20 @@ export default function Planes() {
     return PLANES_INICIALES
   })
   const [filtro, setFiltro] = useState('')
-  const [nuevo, setNuevo] = useState({ titulo: '', prior: 'media', fecha: '', categoria: 'postres' })
+  const [nuevo, setNuevo] = useState({ titulo: '', prior: 'media', fecha: '', categoria: 'postres', hora: '' })
   const [selFecha, setSelFecha] = useState('')
+  const [selectedHour, setSelectedHour] = useState(null)
   const [remoto, setRemoto] = useState(false)
+  const [ocupadosIvan, setOcupadosIvan] = useState(() => {
+    const saved = localStorage.getItem('eve-ocupados-ivan')
+    if (saved) try { return JSON.parse(saved) } catch {}
+    return []
+  })
+  const [ocupadosCheva, setOcupadosCheva] = useState(() => {
+    const saved = localStorage.getItem('eve-ocupados-cheva')
+    if (saved) try { return JSON.parse(saved) } catch {}
+    return []
+  })
 
   useEffect(() => {
     const unsub = escuchar('planes', (docs, err) => {
@@ -80,8 +91,12 @@ export default function Planes() {
   }, [])
 
   useEffect(() => {
-    if (!remoto) localStorage.setItem('eve-planes', JSON.stringify(planes))
-  }, [planes, remoto])
+    if (!remoto) {
+      localStorage.setItem('eve-planes', JSON.stringify(planes))
+      localStorage.setItem('eve-ocupados-ivan', JSON.stringify(ocupadosIvan))
+      localStorage.setItem('eve-ocupados-cheva', JSON.stringify(ocupadosCheva))
+    }
+  }, [planes, remoto, ocupadosIvan, ocupadosCheva])
 
   const toggleHecho = (id) => {
     const x = planes.find((y) => y.id === id)
@@ -90,17 +105,42 @@ export default function Planes() {
     setPlanes((p) => p.map((y) => (y.id === id ? { ...y, hecho } : y)))
     if (remoto) actualizar('planes', id, { hecho }).catch(() => {})
   }
+
+  const toggleOcupado = (persona, hora) => {
+    const key = `${selFecha}T${hora}`
+    if (persona === 'ivan') {
+      const idx = ocupadosIvan.indexOf(key)
+      const nuevo = idx >= 0 ? ocupadosIvan.filter((_, i) => i !== idx) : [...ocupadosIvan, key]
+      setOcupadosIvan(nuevo)
+      setSelectedHour(null)
+    } else {
+      const idx = ocupadosCheva.indexOf(key)
+      const nuevo = idx >= 0 ? ocupadosCheva.filter((_, i) => i !== idx) : [...ocupadosCheva, key]
+      setOcupadosCheva(nuevo)
+      setSelectedHour(null)
+    }
+  }
+
   const eliminar = (id) => {
     setPlanes((p) => p.filter((y) => y.id !== id))
     if (remoto) borrar('planes', id).catch(() => {})
   }
+
   const agregar = () => {
     if (!nuevo.titulo.trim()) return
     const id = 'p' + Date.now()
     const plan = { id, ...nuevo, hecho: false }
     setPlanes((p) => [plan, ...p])
     if (remoto) guardarDoc('planes', id, plan).catch(() => {})
-    setNuevo({ titulo: '', prior: 'media', fecha: selFecha || '', categoria: 'postres' })
+    setNuevo({ titulo: '', prior: 'media', fecha: selFecha || '', categoria: 'postres', hora: '' })
+  }
+
+  const agregarPlanAHora = (plan) => {
+    const id = 'p' + Date.now()
+    const p = { id, ...plan, fecha: selFecha, hecho: false }
+    setPlanes((pp) => [p, ...pp])
+    if (remoto) guardarDoc('planes', id, p).catch(() => {})
+    setSelectedHour(null)
   }
 
   const porHacer = planes.filter(p => !p.hecho).sort((a,b)=> (a.prior==='alta'?-1:1))
@@ -146,6 +186,7 @@ export default function Planes() {
                       <div className="flex gap-1 mt-1 flex-wrap">
                         <span className={`text-[10px] px-2 py-1 rounded-full font-bold uppercase tracking-wide ${PRIOR[p.prior]}`}>{p.prior}</span>
                         {p.fecha && <span className="text-[11px] px-2 py-1 rounded-full bg-cancha text-white">{p.fecha}</span>}
+                        {p.hora && <span className="text-[11px] px-2 py-1 rounded-full bg-rosa text-white">{p.hora}</span>}
                       </div>
                     </div>
                     <button onClick={()=>eliminar(p.id)} className="text-tinta/40 hover:text-rosa px-2">✕</button>
@@ -164,6 +205,7 @@ export default function Planes() {
                     <div className="flex-1 min-w-0">
                       <div className="font-ui font-semibold line-through decoration-cancha/60 opacity-70">{CAT_EMOJI[p.categoria]||''} {p.titulo}</div>
                       {p.fecha && <div className="text-xs text-cancha">{p.fecha}</div>}
+                      {p.hora && <div className="text-xs text-tinta/50">{p.hora}</div>}
                     </div>
                     <button onClick={()=>eliminar(p.id)} className="text-tinta/40 hover:text-rosa px-2">✕</button>
                   </div>
@@ -177,16 +219,14 @@ export default function Planes() {
         <div className="space-y-4 lg:sticky lg:top-20">
           <Calendar planes={planes} selected={selFecha} onSelect={setSelFecha} />
           {selFecha && (
-            <div className="bg-white rounded-[20px] border border-rosa-claro p-4">
-              <div className="font-bold font-ui mb-2">Planes para {selFecha}</div>
-              {planes.filter(p=>p.fecha===selFecha).length===0 ? <p className="text-sm text-tinta/50">Nada aún — agrega uno con esa fecha.</p> :
-                <ul className="space-y-2">
-                  {planes.filter(p=>p.fecha===selFecha).map(p=>(
-                    <li key={p.id} className="text-sm flex justify-between bg-crema rounded-full px-3 py-2"><span>{p.titulo}</span><span className={p.hecho?'text-cancha':'text-rosa'}>{p.hecho?'hecho':'pendiente'}</span></li>
-                  ))}
-                </ul>
-              }
-            </div>
+            <HourlyCalendar
+              fecha={selFecha}
+              onPlan={agregarPlanAHora}
+              onToggleOcupado={toggleOcupado}
+              ocupadosIvan={ocupadosIvan}
+              ocupadosCheva={ocupadosCheva}
+              planes={planes}
+            />
           )}
         </div>
       </div>
