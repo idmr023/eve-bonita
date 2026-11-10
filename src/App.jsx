@@ -38,12 +38,13 @@ export default function App() {
       <Navbar />
 
       {/* mobile nav */}
-      <div className="md:hidden fixed bottom-3 left-1/2 -translate-x-1/2 z-50 bg-tinta text-white rounded-full px-2 py-2 flex gap-1 shadow-xl">
+      <div className="md:hidden fixed bottom-3 left-1/2 -translate-x-1/2 z-50 bg-tinta text-white rounded-full px-2 py-2 flex gap-1 shadow-xl max-w-[calc(100vw-1rem)] overflow-x-auto">
         <a href="#cuenta" className="px-3 py-1 rounded-full text-xs">Inicio</a>
         <a href="#planes" className="px-3 py-1 rounded-full text-xs">Planes</a>
         <a href="#avatars" className="px-3 py-1 rounded-full text-xs">3D</a>
         <a href="#carta" className="px-3 py-1 rounded-full text-xs">Carta</a>
         <a href="#/cartitas" className="px-3 py-1 bg-rosa rounded-full text-xs">Cartitas</a>
+        <a href="#/chat" className="px-3 py-1 rounded-full text-xs">Chat</a>
         <a href="#galeria" className="px-3 py-1 rounded-full text-xs">Fotos</a>
         <a href="#theater" className="px-3 py-1 rounded-full text-xs">Historia</a>
       </div>
