@@ -146,6 +146,30 @@ Iván 💛`,
   },
 ]
 
+export const FULL_DAY = {
+  // Si quieres fijar la fecha, escríbela aquí (formato ISO con zona). Si está vacía, usa la del contador.
+  fechaFija: '2026-11-21T09:00:00-05:00',
+  hora: 'de 9:00 am a 10:00 pm',
+  lugar: 'Lima y alrededores • sorpresas incluidas',
+  lema: 'Esto no es una salida más: es un día entero pensado solo para nosotros dos.',
+  momentos: [
+    { id: 'fd-1', hora: '09:00', titulo: 'Desayuno sorpresa', lugar: 'En casa', emoji: '🥐', detalle: 'Tus favoritos recién hechos, sin prisa y con la mesa puesta bonito. Empezamos el día como se debe: juntos.' },
+    { id: 'fd-2', hora: '10:30', titulo: 'Agradecer juntos', lugar: 'La iglesia', emoji: '⛪', detalle: 'Un ratito de rodillas antes de salir. Tu fe es una de las cosas que más amo de ti.' },
+    { id: 'fd-3', hora: '12:30', titulo: 'Almuerzo de la selva', lugar: 'Nuestro restaurante favorito', emoji: '🍃', detalle: 'Ese sabor a casa que tanto te gusta. Pediremos lo de siempre y lo que nunca probamos.' },
+    { id: 'fd-4', hora: '15:00', titulo: 'Parque de las aguas', lugar: 'Paseo y picnic', emoji: '🎡', detalle: 'Caminar de la mano, fotos tontas y un picnic bajo los árboles. Sin celulares, solo nosotros.' },
+    { id: 'fd-5', hora: '17:30', titulo: 'Postre dulce', lugar: 'La pastelería que amas', emoji: '🧁', detalle: 'Tan dulce como tú. Probamos algo nuevo y fingimos que no nos gusta tanto.' },
+    { id: 'fd-6', hora: '19:00', titulo: 'Noche de peli', lugar: 'Donde tú elijas', emoji: '🎬', detalle: 'Tu peli favorita, manta y tus pies fríos en mi regazo. Contigo, todas son buenas.' },
+    { id: 'fd-7', hora: '21:00', titulo: 'Mirador y promesas', lugar: 'Las luces de la ciudad', emoji: '🌙', detalle: 'Ver la ciudad desde arriba y decirte, una vez más, todo lo que siento y todo lo que quiero seguir haciendo contigo.' },
+    { id: 'fd-8', hora: '22:00', titulo: 'Carta y regalo', lugar: 'Donde termine el día', emoji: '💌', detalle: 'Una cartita escrita a mano y algo que guardé para este momento. El final perfecto de un día perfecto.' },
+  ],
+  reglas: [
+    { titulo: 'Sin prisa', texto: 'Nada de ver el reloj: si algo se alarga, se alarga.' },
+    { titulo: 'Sin celulares', texto: 'Cada foto se toma y se guarda, pero el momento es solo nuestro.' },
+    { titulo: 'Una canción por momento', texto: 'Taylor, Airbag, Oasis o Green Day: cada parada tiene su banda sonora.' },
+    { titulo: 'Todo pensado para ti', texto: 'Cada lugar y cada detalle llevan tu nombre, Cheva.' },
+  ],
+}
+
 export const RAZONES = [
   { titulo: 'Porque brillas', texto: 'Tu hermosa personalidad hace que me enamore cada día un poquito más.' },
   { titulo: 'Porque eres valiente', texto: 'En la cancha no te achicas. Esa garra tuya me enamora.' },

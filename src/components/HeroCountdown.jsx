@@ -55,6 +55,7 @@ export default function HeroCountdown() {
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <a href="#carta" onClick={lanzar} className="bg-tinta text-white px-6 py-3 rounded-full font-semibold shadow hover:bg-tinta/90 transition">abrir mi cartita para ti ↓</a>
           <a href="#planes" className="bg-white border border-rosa-claro px-6 py-3 rounded-full font-semibold shadow-sm hover:bg-rosa-claro/40 transition">ver nuestros planes</a>
+          <a href="#fullday" className="bg-gradient-to-r from-rosa to-dorado px-6 py-3 rounded-full font-semibold text-white shadow-lg hover:scale-[1.02] transition">ver el full day ✨</a>
         </div>
 
         <div className="mt-8 max-w-xl mx-auto bg-white/70 backdrop-blur rounded-2xl border border-white p-4">

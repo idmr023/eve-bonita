@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
-import { collection, addDoc, limit, onSnapshot, orderBy, query, serverTimestamp } from 'firebase/firestore'
-import { ArrowLeft, Heart, MessageCircle, Send, UserRound } from 'lucide-react'
+import { collection, addDoc, arrayRemove, arrayUnion, limit, onSnapshot, orderBy, query, serverTimestamp } from 'firebase/firestore'
+import { ArrowLeft, Heart, MessageCircle, Reply, Send, Smile, UserRound, X } from 'lucide-react'
 import { db } from '../lib/firebase'
+import { actualizar } from '../lib/db'
 
 const NOMBRE_KEY = 'eve-bonita-chat-nombre'
 const MAX_NOMBRE = 40
 const MAX_MENSAJE = 1000
+const REACCIONES = ['❤️', '😂', '😍', '🥹', '🔥', '💛']
 const claveChat = import.meta.env.VITE_CHAT_PASSWORD
 const SESION_KEY = 'eve-bonita-chat-desbloqueado'
 
@@ -115,8 +117,13 @@ function Conversacion({ flotante, salir }) {
   const [errorLectura, setErrorLectura] = useState('')
   const [errorEnvio, setErrorEnvio] = useState('')
   const [avisoNombre, setAvisoNombre] = useState('')
+  const [respondiendo, setRespondiendo] = useState(null)
+  const [pickerPara, setPickerPara] = useState(null)
+  const [destacado, setDestacado] = useState(null)
+  const [errorReaccion, setErrorReaccion] = useState('')
   const [intentoLectura, setIntentoLectura] = useState(0)
   const listaRef = useRef(null)
+  const textareaRef = useRef(null)
   const cercaDelFinal = useRef(true)
 
   useEffect(() => {
@@ -158,6 +165,32 @@ function Conversacion({ flotante, salir }) {
     }
   }
 
+  function toggleReaccion(mensaje, emoji) {
+    if (!nombre) return
+    const quienes = mensaje.reacciones?.[emoji] || []
+    const ya = quienes.includes(nombre)
+    setErrorReaccion('')
+    actualizar('chat_mensajes', mensaje.id, {
+      [`reacciones.${emoji}`]: ya ? arrayRemove(nombre) : arrayUnion(nombre),
+    }).catch((error) => {
+      console.error('No se pudo guardar la reacción:', error)
+      setErrorReaccion('No se pudo guardar tu reacción. Inténtalo otra vez.')
+    })
+  }
+
+  function irAMensaje(id) {
+    setDestacado(id)
+    document.getElementById(`msg-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    window.setTimeout(() => {
+      setDestacado((actual) => (actual === id ? null : actual))
+    }, 1800)
+  }
+
+  function responder(mensaje) {
+    setRespondiendo(mensaje)
+    textareaRef.current?.focus()
+  }
+
   async function enviar(evento) {
     evento.preventDefault()
     const mensaje = texto.trim()
@@ -169,13 +202,19 @@ function Conversacion({ flotante, salir }) {
     setEnviando(true)
     setErrorEnvio('')
     cercaDelFinal.current = true
+    const datos = { nombre, texto: mensaje, creado: serverTimestamp() }
+    if (respondiendo) {
+      datos.respuestaA = {
+        id: respondiendo.id,
+        nombre: respondiendo.nombre,
+        texto: respondiendo.texto,
+      }
+    }
     try {
-      await addDoc(collection(db, 'chat_mensajes'), {
-        nombre,
-        texto: mensaje,
-        creado: serverTimestamp(),
-      })
+      await addDoc(collection(db, 'chat_mensajes'), datos)
       setTexto((actual) => actual === texto ? '' : actual)
+      setRespondiendo(null)
+      setPickerPara(null)
     } catch (error) {
       console.error('No se pudo enviar el mensaje:', error)
       setErrorEnvio('No se pudo enviar el mensaje. Revisa tu conexión y los permisos de Firebase.')
@@ -238,12 +277,61 @@ function Conversacion({ flotante, salir }) {
                 )}
                 {mensajes.map((mensaje) => {
                   const propio = mensaje.nombre === nombre
+                  const reacciones = Object.entries(mensaje.reacciones || {}).filter(([, quienes]) => quienes?.length)
                   return (
-                    <article key={mensaje.id} className={`flex ${propio ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-[85%] rounded-2xl px-4 py-3 shadow-sm sm:max-w-[75%] ${propio ? 'rounded-br-sm bg-rosa text-white' : 'rounded-bl-sm border border-rosa-claro bg-white text-tinta'}`}>
-                        <p className={`text-xs font-bold ${propio ? 'text-white/80' : 'text-rosa'}`}>{mensaje.nombre}</p>
-                        <p className="mt-1 whitespace-pre-wrap break-words text-sm leading-relaxed">{mensaje.texto}</p>
-                        <p className={`mt-2 text-right text-[11px] ${propio ? 'text-white/80' : 'text-tinta/50'}`}>{mensaje.pendiente ? 'Enviando…' : hora(mensaje.creado)}</p>
+                    <article key={mensaje.id} id={`msg-${mensaje.id}`} className={`flex ${propio ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`max-w-[85%] sm:max-w-[75%] ${destacado === mensaje.id ? 'rounded-2xl ring-2 ring-dorado' : ''}`}>
+                        <div className={`rounded-2xl px-4 py-3 shadow-sm ${propio ? 'rounded-br-sm bg-rosa text-white' : 'rounded-bl-sm border border-rosa-claro bg-white text-tinta'}`}>
+                          {mensaje.respuestaA && (
+                            <button
+                              type="button"
+                              onClick={() => irAMensaje(mensaje.respuestaA.id)}
+                              className={`mb-2 block w-full rounded-xl border-l-4 px-3 py-1.5 text-left transition hover:brightness-95 ${propio ? 'border-white/60 bg-white/15' : 'border-rosa/60 bg-rosa-claro/40'}`}
+                            >
+                              <span className={`block text-[11px] font-bold ${propio ? 'text-white/85' : 'text-rosa'}`}>Respondiendo a {mensaje.respuestaA.nombre}</span>
+                              <span className={`block text-xs leading-snug line-clamp-2 ${propio ? 'text-white/80' : 'text-tinta/70'}`}>{mensaje.respuestaA.texto}</span>
+                            </button>
+                          )}
+                          <p className={`text-xs font-bold ${propio ? 'text-white/80' : 'text-rosa'}`}>{mensaje.nombre}</p>
+                          <p className="mt-1 whitespace-pre-wrap break-words text-sm leading-relaxed">{mensaje.texto}</p>
+                          <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                            {reacciones.map(([emoji, quienes]) => (
+                              <button
+                                key={emoji}
+                                type="button"
+                                onClick={() => toggleReaccion(mensaje, emoji)}
+                                aria-pressed={quienes.includes(nombre)}
+                                className={`rounded-full border px-2 py-0.5 text-xs transition ${quienes.includes(nombre) ? 'border-rosa bg-rosa text-white' : propio ? 'border-white/40 bg-white/15 text-white' : 'border-rosa-claro bg-crema text-tinta'}`}
+                              >
+                                {emoji} {quienes.length}
+                              </button>
+                            ))}
+                            <button
+                              type="button"
+                              onClick={() => setPickerPara(pickerPara === mensaje.id ? null : mensaje.id)}
+                              aria-label="Agregar reacción"
+                              aria-expanded={pickerPara === mensaje.id}
+                              className={`rounded-full border p-1 transition ${propio ? 'border-white/40 bg-white/15 text-white hover:bg-white/25' : 'border-rosa-claro bg-crema text-tinta/60 hover:text-rosa'}`}
+                            >
+                              <Smile size={15} aria-hidden="true" />
+                            </button>
+                          </div>
+                          {pickerPara === mensaje.id && (
+                            <div className={`mt-2 flex flex-wrap gap-1 rounded-full border px-2 py-1 ${propio ? 'border-white/25 bg-white/10' : 'border-rosa-claro bg-crema'}`}>
+                              {REACCIONES.map((emoji) => (
+                                <button key={emoji} type="button" onClick={() => toggleReaccion(mensaje, emoji)} className="rounded-full px-1.5 py-0.5 text-base leading-none transition hover:scale-125">
+                                  {emoji}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                          <p className={`mt-2 text-right text-[11px] ${propio ? 'text-white/80' : 'text-tinta/50'}`}>{mensaje.pendiente ? 'Enviando…' : hora(mensaje.creado)}</p>
+                        </div>
+                        <div className={`mt-1 flex ${propio ? 'justify-end' : 'justify-start'}`}>
+                          <button type="button" onClick={() => responder(mensaje)} className={`inline-flex items-center gap-1 text-[11px] font-semibold ${propio ? 'text-white/70' : 'text-tinta/50'} hover:text-rosa`}>
+                            <Reply size={12} aria-hidden="true" /> responder
+                          </button>
+                        </div>
                       </div>
                     </article>
                   )
@@ -257,15 +345,46 @@ function Conversacion({ flotante, salir }) {
                   </div>
                 )}
                 {errorEnvio && <p role="alert" className="mb-3 text-sm text-barca1">{errorEnvio}</p>}
+                {errorReaccion && <p role="alert" className="mb-3 text-sm text-barca1">{errorReaccion}</p>}
                 {avisoNombre && <p role="status" className="mb-3 text-sm text-tinta/70">{avisoNombre}</p>}
+                {respondiendo && (
+                  <div className="mb-3 flex items-start gap-2 rounded-2xl border border-rosa-claro bg-rosa-claro/30 px-3 py-2">
+                    <Reply size={16} className="mt-0.5 shrink-0 text-rosa" aria-hidden="true" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-bold text-rosa">Respondiendo a {respondiendo.nombre}</p>
+                      <p className="text-xs leading-snug text-tinta/70 line-clamp-2">{respondiendo.texto}</p>
+                    </div>
+                    <button type="button" onClick={() => setRespondiendo(null)} aria-label="Cancelar respuesta" className="shrink-0 text-tinta/50 transition hover:text-tinta">
+                      <X size={16} aria-hidden="true" />
+                    </button>
+                  </div>
+                )}
                 <div className="flex items-end gap-2">
                   <label htmlFor="chat-mensaje" className="sr-only">Tu mensaje</label>
-                  <textarea id="chat-mensaje" rows={2} maxLength={MAX_MENSAJE} value={texto} onChange={(e) => setTexto(e.target.value)} placeholder="Escribe algo bonito…" className="min-h-[52px] flex-1 resize-none rounded-2xl border border-rosa-claro px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-rosa" />
+                  <textarea
+                    ref={textareaRef}
+                    id="chat-mensaje"
+                    rows={2}
+                    maxLength={MAX_MENSAJE}
+                    value={texto}
+                    onChange={(e) => setTexto(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault()
+                        enviar(e)
+                      }
+                    }}
+                    placeholder="Escribe algo bonito…"
+                    className="min-h-[52px] flex-1 resize-none rounded-2xl border border-rosa-claro px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-rosa"
+                  />
                   <button type="submit" disabled={!texto.trim() || enviando} className="flex h-[52px] items-center gap-2 rounded-2xl bg-rosa px-4 font-semibold text-white transition hover:bg-barca1 disabled:cursor-not-allowed disabled:opacity-50">
                     <Send size={17} aria-hidden="true" /><span className="hidden sm:inline">{enviando ? 'Enviando…' : 'Enviar'}</span><span className="sr-only sm:hidden">{enviando ? 'Enviando mensaje' : 'Enviar mensaje'}</span>
                   </button>
                 </div>
-                <p className="mt-2 text-right text-xs text-tinta/50">{texto.length}/{MAX_MENSAJE}</p>
+                <div className="mt-2 flex items-center justify-between gap-3">
+                  <p className="text-xs text-tinta/40">Enter para enviar · Shift + Enter para nueva línea</p>
+                  <p className="text-right text-xs text-tinta/50">{texto.length}/{MAX_MENSAJE}</p>
+                </div>
               </form>
             </>
           )}

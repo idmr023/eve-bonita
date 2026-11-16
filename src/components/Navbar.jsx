@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 const links = [
   { href: '#cuenta', label: 'Cuenta regresiva' },
   { href: '#planes', label: 'Planes' },
+  { href: '#fullday', label: 'Full day' },
   { href: '#avatars', label: 'Nosotros 3D' },
   { href: '#carta', label: 'Cartita' },
   { href: '#/cartitas', label: 'Cartitas' },

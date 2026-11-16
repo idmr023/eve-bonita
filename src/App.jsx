@@ -3,6 +3,7 @@ import Watermarks from './components/Watermarks'
 import Navbar from './components/Navbar'
 import HeroCountdown from './components/HeroCountdown'
 import Planes from './components/Planes'
+import FullDay from './components/FullDay'
 import Avatar3D from './components/Avatar3D'
 import Cartita from './components/Cartita'
 import FotoCreativa from './components/FotoCreativa'
@@ -41,6 +42,7 @@ export default function App() {
       <div className="md:hidden fixed bottom-3 left-1/2 -translate-x-1/2 z-50 bg-tinta text-white rounded-full px-2 py-2 flex gap-1 shadow-xl max-w-[calc(100vw-1rem)] overflow-x-auto">
         <a href="#cuenta" className="px-3 py-1 rounded-full text-xs">Inicio</a>
         <a href="#planes" className="px-3 py-1 rounded-full text-xs">Planes</a>
+        <a href="#fullday" className="px-3 py-1 rounded-full text-xs bg-dorado text-tinta">Full day</a>
         <a href="#avatars" className="px-3 py-1 rounded-full text-xs">3D</a>
         <a href="#carta" className="px-3 py-1 rounded-full text-xs">Carta</a>
         <a href="#/cartitas" className="px-3 py-1 bg-rosa rounded-full text-xs">Cartitas</a>
@@ -54,6 +56,7 @@ export default function App() {
         <div className="bg-white/70 backdrop-blur border-y border-rosa-claro">
           <Planes />
         </div>
+        <FullDay />
         <Avatar3D />
         <Cartita />
         <FotoCreativa />
