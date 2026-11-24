@@ -447,7 +447,7 @@ function Escena3D({ indice, orbitando }) {
       <Proscenio />
 
       <ContactShadows position={[0, 0.01, 0.6]} opacity={0.42} scale={8} blur={2.2} far={3} />
-      <Environment preset="city" />
+      <Environment files={`${import.meta.env.BASE_URL}hdri/potsdamer_platz_1k.hdr`} />
       <OrbitControls
         ref={controles}
         makeDefault

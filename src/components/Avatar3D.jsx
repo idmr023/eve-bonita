@@ -113,7 +113,7 @@ export default function Avatar3D() {
                 </>
               ) : <IvanAvatar />}
               <ContactShadows position={[0, -1.45, 0]} opacity={0.45} scale={6} blur={2.4} far={4} />
-              <Environment preset="city" />
+              <Environment files={`${import.meta.env.BASE_URL}hdri/potsdamer_platz_1k.hdr`} />
               <OrbitControls enablePan={false} minDistance={1.8} maxDistance={6} target={[0,0.2,0]} />
             </Canvas>
           </div>
