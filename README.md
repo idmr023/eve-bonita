@@ -41,13 +41,27 @@ El chat usa la colección `chat_mensajes` de Cloud Firestore y documentos con
 `nombre` (texto, máximo 40 caracteres), `texto` (texto, máximo 1000 caracteres)
 y `creado` (fecha del servidor). Cada mensaje puede tener `respuestaA`
 (`{ id, nombre, texto }`, el mensaje exacto al que responde) y `reacciones`
-(mapa de emoji a lista de nombres). Las reacciones se guardan con
+(mapa de emoji a lista de nombres). Al editar un mensaje se actualiza `texto`
+y se añade `editado` (fecha del servidor). Un mensaje con foto lleva `imagen`
+y una nota de voz lleva `audio` (URL de descarga de Storage); en ambos casos
+`texto` puede ir vacío. Los archivos se suben a la carpeta `chat/` de Firebase
+Storage, así que sus reglas deben permitir escribir, leer y borrar ahí. Cada
+persona puede borrar sus mensajes, lo que requiere permiso de **borrado** en
+`chat_mensajes`. La colección `chat_estado` guarda un documento por nombre con
+`escribiendo` (milisegundos del último tecleo) y `visto` (milisegundos del
+último mensaje leído); sin permiso de lectura y escritura ahí, el chat sigue
+funcionando pero sin "escribiendo…" ni doble check. Las reacciones se guardan con
 `arrayUnion`/`arrayRemove`, así que las reglas de Firestore deben permitir
 también la **actualización** de `chat_mensajes`. El bloqueo en la interfaz no cambia las reglas
 de Firestore. Para que el chat funcione sin autenticación, dichas reglas deben
 permitir la lectura y creación de mensajes sin iniciar sesión; esto permite a
 cualquiera acceder directamente a la colección. Si los permisos no permiten el
 acceso, el chat muestra un error. No modifiques las reglas de otras colecciones.
+
+El horario de cada uno (sección Planes) se guarda en la colección `horarios`,
+documentos `ivan` y `cheva`, campo `horas` (lista de `"AAAA-MM-DDTHH:00"`
+ocupadas). Sin permiso de lectura y escritura ahí, cada horario queda solo en
+el navegador donde se marcó y la otra persona no lo ve.
 
 **Privacidad:** el nombre es solo una etiqueta y no verifica qué persona escribe.
 No compartas información sensible.

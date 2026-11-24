@@ -2,7 +2,7 @@ import {
   collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc,
   serverTimestamp,
 } from 'firebase/firestore'
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage'
 import { db, storage } from './firebase'
 
 export function escuchar(coleccion, cb) {
@@ -42,6 +42,9 @@ export function subirArchivo(ruta, file, onProgress) {
     )
   })
 }
+
+// Acepta la URL de descarga, gs://... o la ruta dentro de Storage
+export const borrarArchivo = (rutaOUrl) => deleteObject(ref(storage, rutaOUrl))
 
 // Acepta URL https completa, gs://... o ruta simple ("canciones/x.mp3")
 export async function urlDe(u) {
